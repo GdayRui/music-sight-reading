@@ -21,9 +21,11 @@ export default function Staff({ note, clef }: StaffProps) {
   // Bass clef positions:
   // Lines (bottom to top): G2(y=140), B2(y=120), D3(y=100), F3(y=80), A3(y=60)
   // Spaces (bottom to top): A2(y=130), C3(y=110), E3(y=90), G3(y=70), B3(y=50)
-  // Below staff: F2(y=150), E2(y=160-ledger)
+  // Below staff: F2(y=150), E2(y=160-ledger), D2(y=170), C2(y=180-ledger)
   // Above staff: C4(y=40-ledger), D4(y=30), E4(y=20-ledger)
   const bassPositions: Record<string, number> = {
+    'C2': 180,  // C2 - ledger line below staff
+    'D2': 170,  // D2 - space below ledger
     'E2': 160,  // E2 - ledger line below staff
     'F2': 150,  // F2 - space below bottom line
     'G2': 140,  // G2 - bottom staff line
