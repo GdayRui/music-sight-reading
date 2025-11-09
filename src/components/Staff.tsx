@@ -122,71 +122,127 @@ export default function Staff({ note, clef }: StaffProps) {
         {/* Ledger lines for notes outside staff */}
         {clef === 'treble' ? (
           <>
-            {/* Treble: Above staff ledger lines - y=40, y=20 */}
-            {position <= 50 && (
+            {/* Treble: Above staff ledger lines - only show for notes ON lines or spaces above */}
+            {/* A5 at y=40 (on line), B5 at y=30 (space above) - both need y=40 ledger */}
+            {(position === 40 || position === 30) && (
+              <line
+                key="ledger-above-40"
+                x1="185"
+                y1={40}
+                x2="215"
+                y2={40}
+                stroke="#000"
+                strokeWidth="1"
+              />
+            )}
+            {/* C6 at y=20 (on line) - needs both y=40 and y=20 ledgers */}
+            {position === 20 && (
               <>
-                {[40, 20].filter(y => y >= position - 10).map(y => (
-                  <line
-                    key={`ledger-above-${y}`}
-                    x1="185"
-                    y1={y}
-                    x2="215"
-                    y2={y}
-                    stroke="#000"
-                    strokeWidth="1"
-                  />
-                ))}
+                <line
+                  key="ledger-above-40"
+                  x1="185"
+                  y1={40}
+                  x2="215"
+                  y2={40}
+                  stroke="#000"
+                  strokeWidth="1"
+                />
+                <line
+                  key="ledger-above-20"
+                  x1="185"
+                  y1={20}
+                  x2="215"
+                  y2={20}
+                  stroke="#000"
+                  strokeWidth="1"
+                />
               </>
             )}
-            {/* Treble: Below staff ledger line - y=160 (for C4) */}
-            {position >= 160 && (
-              <>
-                {[160].filter(y => y <= position + 10).map(y => (
-                  <line
-                    key={`ledger-below-${y}`}
-                    x1="185"
-                    y1={y}
-                    x2="215"
-                    y2={y}
-                    stroke="#000"
-                    strokeWidth="1"
-                  />
-                ))}
-              </>
+            {/* Treble: Below staff ledger line - only for C4 at y=160 or D4 at y=150 */}
+            {(position === 160 || position === 150) && (
+              <line
+                key="ledger-below-160"
+                x1="185"
+                y1={160}
+                x2="215"
+                y2={160}
+                stroke="#000"
+                strokeWidth="1"
+              />
             )}
           </>
         ) : (
           <>
-            {/* Bass: Above staff ledger lines - y=40, y=20 */}
-            {position <= 50 && (
+            {/* Bass: Above staff ledger lines - only show for notes ON lines or spaces above */}
+            {/* C4 at y=40 (on line), D4 at y=30 (space above) - both need y=40 ledger */}
+            {(position === 40 || position === 30) && (
+              <line
+                key="ledger-above-40"
+                x1="185"
+                y1={40}
+                x2="215"
+                y2={40}
+                stroke="#000"
+                strokeWidth="1"
+              />
+            )}
+            {/* E4 at y=20 (on line) - needs both y=40 and y=20 ledgers */}
+            {position === 20 && (
               <>
-                {[40, 20].filter(y => y >= position - 10).map(y => (
-                  <line
-                    key={`ledger-above-${y}`}
-                    x1="185"
-                    y1={y}
-                    x2="215"
-                    y2={y}
-                    stroke="#000"
-                    strokeWidth="1"
-                  />
-                ))}
+                <line
+                  key="ledger-above-40"
+                  x1="185"
+                  y1={40}
+                  x2="215"
+                  y2={40}
+                  stroke="#000"
+                  strokeWidth="1"
+                />
+                <line
+                  key="ledger-above-20"
+                  x1="185"
+                  y1={20}
+                  x2="215"
+                  y2={20}
+                  stroke="#000"
+                  strokeWidth="1"
+                />
               </>
             )}
-            {/* Bass: Below staff ledger lines - y=160, y=180 */}
-            {position >= 160 && (
+            {/* Bass: Below staff ledger lines - for notes ON lines or spaces below */}
+            {/* E2 at y=160 (on line), D2 at y=170 (space below) - both need y=160 ledger */}
+            {(position === 160 || position === 170) && (
+              <line
+                key="ledger-below-160"
+                x1="185"
+                y1={160}
+                x2="215"
+                y2={160}
+                stroke="#000"
+                strokeWidth="1"
+              />
+            )}
+            {/* C2 at y=180 (on line) - needs both y=160 and y=180 ledgers */}
+            {position === 180 && (
               <>
-                {[160, 180].filter(y => y <= position + 10).map(y => (
-                  <line
-                    key={`ledger-below-${y}`}
-                    x1="185"
-                    y1={y}
-                    x2="215"
-                    y2={y}
-                    stroke="#000"
-                    strokeWidth="1"
-                  />
-                ))}
+                <line
+                  key="ledger-below-160"
+                  x1="185"
+                  y1={160}
+                  x2="215"
+                  y2={160}
+                  stroke="#000"
+                  strokeWidth="1"
+                />
+                <line
+                  key="ledger-below-180"
+                  x1="185"
+                  y1={180}
+                  x2="215"
+                  y2={180}
+                  stroke="#000"
+                  strokeWidth="1"
+                />
               </>
             )}
           </>
