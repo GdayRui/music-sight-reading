@@ -115,9 +115,9 @@ export default function Staff({ note, clef }: StaffProps) {
                 {[40, 20].filter(y => y >= position - 10).map(y => (
                   <line
                     key={`ledger-above-${y}`}
-                    x1="190"
+                    x1="185"
                     y1={y}
-                    x2="210"
+                    x2="215"
                     y2={y}
                     stroke="#000"
                     strokeWidth="1"
@@ -131,9 +131,9 @@ export default function Staff({ note, clef }: StaffProps) {
                 {[160].filter(y => y <= position + 10).map(y => (
                   <line
                     key={`ledger-below-${y}`}
-                    x1="190"
+                    x1="185"
                     y1={y}
-                    x2="210"
+                    x2="215"
                     y2={y}
                     stroke="#000"
                     strokeWidth="1"
@@ -150,9 +150,9 @@ export default function Staff({ note, clef }: StaffProps) {
                 {[40, 20].filter(y => y >= position - 10).map(y => (
                   <line
                     key={`ledger-above-${y}`}
-                    x1="190"
+                    x1="185"
                     y1={y}
-                    x2="210"
+                    x2="215"
                     y2={y}
                     stroke="#000"
                     strokeWidth="1"
@@ -166,9 +166,9 @@ export default function Staff({ note, clef }: StaffProps) {
                 {[160, 180].filter(y => y <= position + 10).map(y => (
                   <line
                     key={`ledger-below-${y}`}
-                    x1="190"
+                    x1="185"
                     y1={y}
-                    x2="210"
+                    x2="215"
                     y2={y}
                     stroke="#000"
                     strokeWidth="1"
