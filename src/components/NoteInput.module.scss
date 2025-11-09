@@ -1,0 +1,134 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1rem;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.inputRow {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.label {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #333;
+  text-align: center;
+}
+
+.input {
+  padding: 0.75rem 1rem;
+  font-size: 1.5rem;
+  text-align: center;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  width: 4rem;
+  height: 3rem;
+  text-transform: uppercase;
+  font-weight: bold;
+  background: white;
+  display: flex;
+  align-items: center;
+  
+  &:focus {
+    outline: none;
+    border-color: #4285f4;
+    box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.2);
+  }
+
+  &:disabled {
+    background: #f5f5f5;
+    color: #666;
+  }
+}
+
+.buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+.submitButton, .resetButton {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+}
+
+.submitButton {
+  background: #4285f4;
+  color: white;
+  
+  &:hover:not(:disabled) {
+    background: #3367d6;
+    transform: translateY(-1px);
+  }
+}
+
+.resetButton {
+  background: #34a853;
+  color: white;
+  
+  &:hover {
+    background: #2d8f3f;
+    transform: translateY(-1px);
+  }
+}
+
+.noteButtons {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.noteButton {
+  width: 3rem;
+  height: 3rem;
+  border: 2px solid #ddd;
+  background: white;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    border-color: #4285f4;
+    transform: scale(1.05);
+  }
+  
+  &.selected {
+    background: #4285f4;
+    color: white;
+    border-color: #4285f4;
+  }
+}

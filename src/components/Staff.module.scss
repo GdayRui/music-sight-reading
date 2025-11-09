@@ -1,0 +1,23 @@
+.staff-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  
+  svg {
+    max-width: 100%;
+    height: auto;
+    filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.1));
+  }
+}
+
+@media (max-width: 480px) {
+  .staff-container {
+    padding: 0.5rem;
+    
+    svg {
+      width: 280px;
+      height: auto;
+    }
+  }
+}
