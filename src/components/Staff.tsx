@@ -77,8 +77,8 @@ export default function Staff({ note, clef }: StaffProps) {
         ) : (
           <text
             x="60"
-            y="105"
-            fontSize="60"
+            y="118"
+            fontSize="85"
             fontFamily="serif"
             fill="#000"
           >
