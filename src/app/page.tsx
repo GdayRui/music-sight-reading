@@ -8,6 +8,7 @@ import styles from './page.module.scss';
 
 export default function Home() {
   const [currentNote, setCurrentNote] = useState('');
+  const [clef, setClef] = useState<'treble' | 'bass'>('treble');
   const [result, setResult] = useState<{
     isCorrect: boolean;
     userGuess: string;
@@ -16,11 +17,11 @@ export default function Home() {
   
   const nextButtonRef = useRef<HTMLButtonElement>(null);
 
-
-
-  const notes = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5', 'D5', 'E5', 'F5', 'G5', 'A5', 'B5', 'C6'];
+  const trebleNotes = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5', 'D5', 'E5', 'F5', 'G5', 'A5', 'B5', 'C6'];
+  const bassNotes = ['E2', 'F2', 'G2', 'A2', 'B2', 'C3', 'D3', 'E3', 'F3', 'G3', 'A3', 'B3', 'C4', 'D4', 'E4', 'F4', 'G4'];
 
   const generateRandomNote = () => {
+    const notes = clef === 'treble' ? trebleNotes : bassNotes;
     const randomIndex = Math.floor(Math.random() * notes.length);
     return notes[randomIndex];
   };
@@ -28,6 +29,12 @@ export default function Home() {
   useEffect(() => {
     setCurrentNote(generateRandomNote());
   }, []);
+
+  // Regenerate note when clef changes
+  useEffect(() => {
+    setResult(null);
+    setCurrentNote(generateRandomNote());
+  }, [clef]);
 
   // Auto-focus the "Next Note" button when result is shown
   useEffect(() => {
@@ -61,12 +68,28 @@ export default function Home() {
           <p className={styles.subtitle}>
             Identify the note displayed on the staff
           </p>
+          
+          {/* Clef selector */}
+          <div className={styles.clefSelector}>
+            <button 
+              className={`${styles.clefButton} ${clef === 'treble' ? styles.active : ''}`}
+              onClick={() => setClef('treble')}
+            >
+              Treble Clef
+            </button>
+            <button 
+              className={`${styles.clefButton} ${clef === 'bass' ? styles.active : ''}`}
+              onClick={() => setClef('bass')}
+            >
+              Bass Clef
+            </button>
+          </div>
         </header>
 
         {currentNote && (
           <div className={styles.gameArea}>
             <div className={styles.staffSection}>
-              <Staff note={currentNote} />
+              <Staff note={currentNote} clef={clef} />
             </div>
 
             <div className={styles.interactionSection}>

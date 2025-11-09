@@ -33,8 +33,39 @@
 .subtitle {
   font-size: 1.3rem;
   color: #5a6c7d;
-  margin: 0;
+  margin: 0 0 1.5rem 0;
   font-weight: 300;
+}
+
+.clefSelector {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.clefButton {
+  padding: 0.75rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: 2px solid #3498db;
+  background: white;
+  color: #3498db;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: #ecf5fc;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.2);
+  }
+
+  &.active {
+    background: #3498db;
+    color: white;
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+  }
 }
 
 .gameArea {
