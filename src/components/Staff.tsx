@@ -22,7 +22,7 @@ export default function Staff({ note, clef }: StaffProps) {
   // Lines (bottom to top): G2(y=140), B2(y=120), D3(y=100), F3(y=80), A3(y=60)
   // Spaces (bottom to top): A2(y=130), C3(y=110), E3(y=90), G3(y=70), B3(y=50)
   // Below staff: F2(y=150), E2(y=160-ledger), D2(y=170), C2(y=180-ledger)
-  // Above staff: C4(y=40-ledger), D4(y=30), E4(y=20-ledger)
+  // Above staff: C4(y=40-ledger), D4(y=30), E4(y=20-ledger), F4(y=10), G4(y=0-ledger)
   const bassPositions: Record<string, number> = {
     'C2': 180,  // C2 - ledger line below staff
     'D2': 170,  // D2 - space below ledger
@@ -41,8 +41,8 @@ export default function Staff({ note, clef }: StaffProps) {
     'C4': 40,   // C4 - ledger line above staff
     'D4': 30,   // D4 - space above ledger
     'E4': 20,   // E4 - ledger line above staff
-    'F4': 10,   // F4 - space above ledger (too high, adjust if needed)
-    'G4': 0,    // G4 - ledger line above staff (too high, adjust if needed)
+    'F4': 10,   // F4 - space above ledger
+    'G4': 0,    // G4 - ledger line above staff
   };
 
   const notePositions = clef === 'treble' ? treblePositions : bassPositions;

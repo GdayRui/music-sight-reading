@@ -8,7 +8,8 @@ import styles from './page.module.scss';
 
 export default function Home() {
   const [currentNote, setCurrentNote] = useState('');
-  const [clef, setClef] = useState<'treble' | 'bass'>('treble');
+  const [mode, setMode] = useState<'treble' | 'bass' | 'mixed'>('treble');
+  const [currentClef, setCurrentClef] = useState<'treble' | 'bass'>('treble');
   const [result, setResult] = useState<{
     isCorrect: boolean;
     userGuess: string;
@@ -18,10 +19,23 @@ export default function Home() {
   const nextButtonRef = useRef<HTMLButtonElement>(null);
 
   const trebleNotes = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5', 'D5', 'E5', 'F5', 'G5', 'A5', 'B5', 'C6'];
-  const bassNotes = ['C2', 'D2', 'E2', 'F2', 'G2', 'A2', 'B2', 'C3', 'D3', 'E3', 'F3', 'G3', 'A3', 'B3', 'C4', 'D4', 'E4', 'F4', 'G4'];
+  const bassNotes = ['C2', 'D2', 'E2', 'F2', 'G2', 'A2', 'B2', 'C3', 'D3', 'E3', 'F3', 'G3', 'A3', 'B3', 'C4', 'D4', 'E4'];
 
   const generateRandomNote = () => {
-    const notes = clef === 'treble' ? trebleNotes : bassNotes;
+    let notes: string[];
+    let clef: 'treble' | 'bass';
+    
+    if (mode === 'mixed') {
+      // Randomly choose a clef
+      clef = Math.random() < 0.5 ? 'treble' : 'bass';
+      notes = clef === 'treble' ? trebleNotes : bassNotes;
+      setCurrentClef(clef);
+    } else {
+      clef = mode;
+      notes = mode === 'treble' ? trebleNotes : bassNotes;
+      setCurrentClef(clef);
+    }
+    
     const randomIndex = Math.floor(Math.random() * notes.length);
     return notes[randomIndex];
   };
@@ -30,15 +44,15 @@ export default function Home() {
     setCurrentNote(generateRandomNote());
   }, []);
 
-  // Regenerate note when clef changes
+  // Regenerate note when mode changes
   useEffect(() => {
     setResult(null);
     setCurrentNote(generateRandomNote());
-  }, [clef]);
+  }, [mode]);
 
-  // Auto-focus the "Next Note" button when result is shown
+  // Auto-focus the "Next Note" button only when answer is correct
   useEffect(() => {
-    if (result && nextButtonRef.current) {
+    if (result && result.isCorrect && nextButtonRef.current) {
       nextButtonRef.current.focus();
     }
   }, [result]);
@@ -72,16 +86,22 @@ export default function Home() {
           {/* Clef selector */}
           <div className={styles.clefSelector}>
             <button 
-              className={`${styles.clefButton} ${clef === 'treble' ? styles.active : ''}`}
-              onClick={() => setClef('treble')}
+              className={`${styles.clefButton} ${mode === 'treble' ? styles.active : ''}`}
+              onClick={() => setMode('treble')}
             >
               Treble Clef
             </button>
             <button 
-              className={`${styles.clefButton} ${clef === 'bass' ? styles.active : ''}`}
-              onClick={() => setClef('bass')}
+              className={`${styles.clefButton} ${mode === 'bass' ? styles.active : ''}`}
+              onClick={() => setMode('bass')}
             >
               Bass Clef
+            </button>
+            <button 
+              className={`${styles.clefButton} ${mode === 'mixed' ? styles.active : ''}`}
+              onClick={() => setMode('mixed')}
+            >
+              Mixed
             </button>
           </div>
         </header>
@@ -89,7 +109,7 @@ export default function Home() {
         {currentNote && (
           <div className={styles.gameArea}>
             <div className={styles.staffSection}>
-              <Staff note={currentNote} clef={clef} />
+              <Staff note={currentNote} clef={currentClef} />
             </div>
 
             <div className={styles.interactionSection}>
