@@ -96,15 +96,28 @@ export default function Staff({ note, clef }: StaffProps) {
           fill="#000"
         />
         
-        {/* Stem */}
-        <line
-          x1="208"
-          y1={position}
-          x2="208"
-          y2={position - 40}
-          stroke="#000"
-          strokeWidth="2"
-        />
+        {/* Stem - direction based on position relative to middle line (y=100) */}
+        {position <= 100 ? (
+          // Stem goes down (to the left of note head)
+          <line
+            x1="193"
+            y1={position}
+            x2="193"
+            y2={position + 40}
+            stroke="#000"
+            strokeWidth="2"
+          />
+        ) : (
+          // Stem goes up (to the right of note head)
+          <line
+            x1="207"
+            y1={position}
+            x2="207"
+            y2={position - 40}
+            stroke="#000"
+            strokeWidth="2"
+          />
+        )}
         
         {/* Ledger lines for notes outside staff */}
         {clef === 'treble' ? (
