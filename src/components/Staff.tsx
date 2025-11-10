@@ -88,21 +88,23 @@ export default function Staff({ note, clef }: StaffProps) {
           </text>
         )}
         
-        {/* Note */}
-        <circle
+        {/* Note - ellipse rotated to look like a real music note */}
+        <ellipse
           cx="200"
           cy={position}
-          r="8"
+          rx="9"
+          ry="7"
           fill="#000"
+          transform={`rotate(-20 200 ${position})`}
         />
         
         {/* Stem - direction based on position relative to middle line (y=100) */}
         {position <= 100 ? (
           // Stem goes down (to the left of note head)
           <line
-            x1="193"
+            x1="192"
             y1={position}
-            x2="193"
+            x2="192"
             y2={position + 40}
             stroke="#000"
             strokeWidth="2"
@@ -110,9 +112,9 @@ export default function Staff({ note, clef }: StaffProps) {
         ) : (
           // Stem goes up (to the right of note head)
           <line
-            x1="207"
+            x1="208"
             y1={position}
-            x2="207"
+            x2="208"
             y2={position - 40}
             stroke="#000"
             strokeWidth="2"
