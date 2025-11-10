@@ -1,0 +1,45 @@
+name: Deploy to AWS Amplify
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Deploy CloudFormation stack
+        run: |
+          aws cloudformation deploy \
+            --template-file cloudformation/amplify-app.yml \
+            --stack-name sight-reading-amplify \
+            --parameter-overrides \
+              GitHubToken=${{ secrets.GH_TOKEN_AMPLIFY }} \
+              Repository=${{ github.repository }} \
+              Branch=${{ github.ref_name }} \
+            --capabilities CAPABILITY_IAM \
+            --no-fail-on-empty-changeset
+
+      - name: Get Amplify App URL
+        run: |
+          APP_ID=$(aws cloudformation describe-stacks \
+            --stack-name sight-reading-amplify \
+            --query 'Stacks[0].Outputs[?OutputKey==`AppId`].OutputValue' \
+            --output text)
+          echo "Amplify App URL: https://${{ github.ref_name }}.${APP_ID}.amplifyapp.com"

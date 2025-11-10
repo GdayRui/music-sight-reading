@@ -1,0 +1,94 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'AWS Amplify App for Piano Sight Reading Application'
+
+Parameters:
+  GitHubToken:
+    Type: String
+    NoEcho: true
+    Description: GitHub personal access token for Amplify to access the repository
+  
+  Repository:
+    Type: String
+    Description: GitHub repository in the format owner/repo
+    Default: GdayRui/music-sight-reading
+  
+  Branch:
+    Type: String
+    Description: Branch to deploy
+    Default: main
+
+Resources:
+  AmplifyApp:
+    Type: AWS::Amplify::App
+    Properties:
+      Name: sight-reading-app
+      Description: Piano Sight Reading Practice Application
+      Repository: !Sub 'https://github.com/${Repository}'
+      AccessToken: !Ref GitHubToken
+      BuildSpec: |
+        version: 1
+        frontend:
+          phases:
+            preBuild:
+              commands:
+                - npm ci
+            build:
+              commands:
+                - npm run build
+          artifacts:
+            baseDirectory: .next
+            files:
+              - '**/*'
+          cache:
+            paths:
+              - node_modules/**/*
+      EnvironmentVariables:
+        - Name: NEXT_PUBLIC_APP_NAME
+          Value: Piano Sight Reading
+      IAMServiceRole: !GetAtt AmplifyRole.Arn
+      Platform: WEB_COMPUTE
+      CustomRules:
+        - Source: /<*>
+          Target: /index.html
+          Status: '404-200'
+
+  AmplifyBranch:
+    Type: AWS::Amplify::Branch
+    Properties:
+      AppId: !GetAtt AmplifyApp.AppId
+      BranchName: !Ref Branch
+      EnableAutoBuild: true
+      EnablePullRequestPreview: false
+      Stage: PRODUCTION
+
+  AmplifyRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: amplify.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AdministratorAccess-Amplify
+
+Outputs:
+  AppId:
+    Description: Amplify App ID
+    Value: !GetAtt AmplifyApp.AppId
+    Export:
+      Name: !Sub '${AWS::StackName}-AppId'
+  
+  DefaultDomain:
+    Description: Amplify App Default Domain
+    Value: !GetAtt AmplifyApp.DefaultDomain
+    Export:
+      Name: !Sub '${AWS::StackName}-DefaultDomain'
+  
+  AppUrl:
+    Description: Application URL
+    Value: !Sub 'https://${Branch}.${AmplifyApp.DefaultDomain}'
+    Export:
+      Name: !Sub '${AWS::StackName}-AppUrl'
