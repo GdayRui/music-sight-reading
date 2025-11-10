@@ -53,6 +53,10 @@ export default function NoteInput({ correctNote, onSubmit }: NoteInputProps) {
               disabled={isSubmitted}
               pattern="[CDEFGABcdefgab]"
               autoFocus
+              autoComplete="off"
+              autoCorrect="off"
+              autoCapitalize="off"
+              spellCheck="false"
             />
             {!isSubmitted && (
               <button 
