@@ -4,12 +4,14 @@ import { useState, useEffect, useRef } from 'react';
 import Staff from '../components/Staff';
 import NoteInput from '../components/NoteInput';
 import Result from '../components/Result';
+import AudioInput from '../components/AudioInput';
 import styles from './page.module.scss';
 
 export default function Home() {
   const [currentNote, setCurrentNote] = useState('');
   const [mode, setMode] = useState<'treble' | 'bass' | 'mixed'>('treble');
   const [currentClef, setCurrentClef] = useState<'treble' | 'bass'>('treble');
+  const [audioInputEnabled, setAudioInputEnabled] = useState(false);
   const [result, setResult] = useState<{
     isCorrect: boolean;
     userGuess: string;
@@ -57,7 +59,7 @@ export default function Home() {
     }
   }, [result]);
 
-  const handleNoteSubmit = (guess: string) => {
+  const handleNoteSubmit = (guess: string, confidence?: number) => {
     // Extract just the note letter from currentNote (e.g., "C4" becomes "C")
     const correctNoteLetter = currentNote.charAt(0);
     const isCorrect = guess.toUpperCase() === correctNoteLetter.toUpperCase();
@@ -113,6 +115,22 @@ export default function Home() {
             </div>
 
             <div className={styles.interactionSection}>
+              {/* Input mode toggle */}
+              <div className={styles.inputModeToggle}>
+                <button 
+                  className={`${styles.modeButton} ${!audioInputEnabled ? styles.active : ''}`}
+                  onClick={() => setAudioInputEnabled(false)}
+                >
+                  Keyboard
+                </button>
+                <button 
+                  className={`${styles.modeButton} ${audioInputEnabled ? styles.active : ''}`}
+                  onClick={() => setAudioInputEnabled(true)}
+                >
+                  Microphone
+                </button>
+              </div>
+
               {result ? (
                 <div className={styles.resultSection}>
                   <Result 
@@ -130,10 +148,18 @@ export default function Home() {
                 </div>
               ) : (
                 <div className={styles.inputSection}>
-                  <NoteInput 
-                    correctNote={currentNote}
-                    onSubmit={handleNoteSubmit}
-                  />
+                  {audioInputEnabled ? (
+                    <AudioInput 
+                      correctNote={currentNote}
+                      onSubmit={handleNoteSubmit}
+                      isEnabled={true}
+                    />
+                  ) : (
+                    <NoteInput 
+                      correctNote={currentNote}
+                      onSubmit={handleNoteSubmit}
+                    />
+                  )}
                 </div>
               )}
             </div>

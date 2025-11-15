@@ -1,0 +1,113 @@
+.container {
+  background: linear-gradient(145deg, #f8f9fa, #e9ecef);
+  border: 2px solid #dee2e6;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-top: 1rem;
+  
+  .title {
+    margin: 0 0 1rem 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #495057;
+    text-align: center;
+  }
+  
+  .controls {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+    
+    button {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .startButton {
+      background: linear-gradient(145deg, #28a745, #20c997);
+      color: white;
+      
+      &:hover {
+        background: linear-gradient(145deg, #20c997, #17a2b8);
+        transform: translateY(-2px);
+      }
+    }
+    
+    .stopButton {
+      background: linear-gradient(145deg, #dc3545, #e74c3c);
+      color: white;
+      
+      &:hover {
+        background: linear-gradient(145deg, #c82333, #dc3545);
+        transform: translateY(-2px);
+      }
+    }
+  }
+  
+  .feedback {
+    .status {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+      color: #6c757d;
+      
+      .indicator {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        
+        &.listening {
+          background: #28a745;
+          animation: pulse 1.5s infinite;
+        }
+      }
+    }
+    
+    .detection {
+      text-align: center;
+      padding: 0.75rem;
+      background: rgba(40, 167, 69, 0.1);
+      border: 1px solid rgba(40, 167, 69, 0.3);
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      
+      .note {
+        display: block;
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #155724;
+        margin-bottom: 0.25rem;
+      }
+      
+      .confidence {
+        font-size: 0.9rem;
+        color: #155724;
+      }
+    }
+  }
+  
+  .instructions {
+    text-align: center;
+    font-size: 0.85rem;
+    color: #6c757d;
+    line-height: 1.4;
+    
+    p {
+      margin: 0.5rem 0;
+    }
+  }
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
