@@ -59,56 +59,42 @@ export default function AudioInput({ correctNote, onSubmit, isEnabled }: AudioIn
     // Increase threshold to ignore ambient noise - only detect actual piano sounds
     if (rms < 0.01) return -1; // Require stronger signal to avoid ambient noise
     
-    let r1 = 0;
-    let r2 = SIZE - 1;
-    const threshold = 0.1; // Lower threshold for better detection
-    
-    // Find the start and end of the signal above threshold
-    for (let i = 0; i < SIZE / 2; i++) {
-      if (Math.abs(buffer[i]) < threshold) {
-        r1 = i;
-        break;
-      }
-    }
-    
-    for (let i = 1; i < SIZE / 2; i++) {
-      if (Math.abs(buffer[SIZE - i]) < threshold) {
-        r2 = SIZE - i;
-        break;
-      }
-    }
-    
-    const correlations = new Float32Array(SIZE);
-    let maxCorrelation = 0;
-    let bestOffset = -1;
-    
     // Start from a minimum offset to avoid finding harmonics
     // For piano range C2 (65Hz) to C6 (1046Hz), we need offset range
     const minOffset = Math.floor(sampleRate / 1200); // ~40 samples at 48kHz (higher than C6)
     const maxOffset = Math.floor(sampleRate / 60);   // ~800 samples at 48kHz (lower than C2)
     
-    for (let i = Math.max(r1, minOffset); i < Math.min(r2, maxOffset); i++) {
-      let correlation = 0;
-      for (let j = 0; j < SIZE - i; j++) {
-        correlation += Math.abs(buffer[j] * buffer[j + i]);
+    let maxCorrelation = 0;
+    let bestOffset = -1;
+    const correlations = new Float32Array(SIZE);
+    
+    // Calculate autocorrelation
+    for (let offset = minOffset; offset < Math.min(maxOffset, SIZE / 2); offset++) {
+      let sum = 0;
+      for (let i = 0; i < SIZE - offset; i++) {
+        sum += Math.abs(buffer[i] * buffer[i + offset]);
       }
-      correlations[i] = correlation;
       
-      if (correlation > maxCorrelation) {
-        maxCorrelation = correlation;
-        bestOffset = i;
+      correlations[offset] = sum;
+      
+      if (sum > maxCorrelation) {
+        maxCorrelation = sum;
+        bestOffset = offset;
       }
     }
     
     if (bestOffset === -1) return -1;
     
-    // Interpolate for better precision
+    // Interpolate for better precision using parabolic interpolation
     let shift = 0;
-    if (bestOffset > 0 && bestOffset < correlations.length - 1) {
+    if (bestOffset > minOffset && bestOffset < SIZE / 2 - 1) {
       const y1 = correlations[bestOffset - 1];
       const y2 = correlations[bestOffset];
       const y3 = correlations[bestOffset + 1];
-      shift = (y3 - y1) / (2 * (2 * y2 - y1 - y3));
+      const denominator = (2 * y2 - y1 - y3);
+      if (denominator !== 0) {
+        shift = (y3 - y1) / (2 * denominator);
+      }
     }
     
     const finalOffset = bestOffset + shift;
@@ -199,7 +185,7 @@ export default function AudioInput({ correctNote, onSubmit, isEnabled }: AudioIn
       analyserRef.current = audioContextRef.current.createAnalyser();
       microphoneRef.current = audioContextRef.current.createMediaStreamSource(stream);
       
-      analyserRef.current.fftSize = 2048;
+      analyserRef.current.fftSize = 4096; // Increase buffer size for better low-frequency resolution
       analyserRef.current.smoothingTimeConstant = 0.8;
       analyserRef.current.minDecibels = -90;
       analyserRef.current.maxDecibels = -10;
