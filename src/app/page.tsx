@@ -19,6 +19,7 @@ export default function Home() {
   } | null>(null);
   
   const nextButtonRef = useRef<HTMLButtonElement>(null);
+  const currentNoteRef = useRef<string>(''); // Add ref to always have latest note
 
   const trebleNotes = ['C4', 'D4', 'E4', 'F4', 'G4', 'A4', 'B4', 'C5', 'D5', 'E5', 'F5', 'G5', 'A5', 'B5', 'C6'];
   const bassNotes = ['C2', 'D2', 'E2', 'F2', 'G2', 'A2', 'B2', 'C3', 'D3', 'E3', 'F3', 'G3', 'A3', 'B3', 'C4', 'D4', 'E4'];
@@ -43,13 +44,17 @@ export default function Home() {
   };
 
   useEffect(() => {
-    setCurrentNote(generateRandomNote());
+    const newNote = generateRandomNote();
+    setCurrentNote(newNote);
+    currentNoteRef.current = newNote; // Keep ref in sync
   }, []);
 
   // Regenerate note when mode changes
   useEffect(() => {
     setResult(null);
-    setCurrentNote(generateRandomNote());
+    const newNote = generateRandomNote();
+    setCurrentNote(newNote);
+    currentNoteRef.current = newNote; // Keep ref in sync
   }, [mode]);
 
   // Auto-focus the "Next Note" button only when answer is correct
@@ -59,21 +64,38 @@ export default function Home() {
     }
   }, [result]);
 
+  // Auto-advance to next note after 500ms if answer is correct
+  useEffect(() => {
+    if (result && result.isCorrect) {
+      const timer = setTimeout(() => {
+        setResult(null);
+        const newNote = generateRandomNote();
+        setCurrentNote(newNote);
+        currentNoteRef.current = newNote; // Keep ref in sync
+      }, 500);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [result]);
+
   const handleNoteSubmit = (guess: string, confidence?: number) => {
     // Extract just the note letter from currentNote (e.g., "C4" becomes "C")
-    const correctNoteLetter = currentNote.charAt(0);
+    // Use ref to get the latest value, avoiding stale closure
+    const correctNoteLetter = currentNoteRef.current.charAt(0);
     const isCorrect = guess.toUpperCase() === correctNoteLetter.toUpperCase();
     
     setResult({
       isCorrect,
       userGuess: guess,
-      correctNote: currentNote
+      correctNote: currentNoteRef.current
     });
   };
 
   const handleNextNote = () => {
     setResult(null);
-    setCurrentNote(generateRandomNote());
+    const newNote = generateRandomNote();
+    setCurrentNote(newNote);
+    currentNoteRef.current = newNote; // Keep ref in sync
   };
 
   return (
@@ -112,6 +134,15 @@ export default function Home() {
           <div className={styles.gameArea}>
             <div className={styles.staffSection}>
               <Staff note={currentNote} clef={currentClef} />
+              {result && result.isCorrect && (
+                <div className={styles.successIndicator}>✓</div>
+              )}
+              {result && !result.isCorrect && (
+                <div className={styles.failureIndicator}>
+                  <div className={styles.wrongMark}>✗</div>
+                  <div className={styles.correctAnswer}>Correct: {result.correctNote}</div>
+                </div>
+              )}
             </div>
 
             <div className={styles.interactionSection}>
@@ -131,13 +162,18 @@ export default function Home() {
                 </button>
               </div>
 
-              {result ? (
+              {/* Keep AudioInput mounted to maintain listening state */}
+              {audioInputEnabled && (
+                <AudioInput 
+                  correctNote={currentNote}
+                  onSubmit={handleNoteSubmit}
+                  isEnabled={true}
+                />
+              )}
+
+              {/* Only show result section for wrong answers or keyboard mode */}
+              {result && !result.isCorrect && (
                 <div className={styles.resultSection}>
-                  <Result 
-                    isCorrect={result.isCorrect}
-                    userGuess={result.userGuess}
-                    correctNote={result.correctNote}
-                  />
                   <button 
                     ref={nextButtonRef}
                     onClick={handleNextNote}
@@ -146,20 +182,14 @@ export default function Home() {
                     Next Note
                   </button>
                 </div>
-              ) : (
+              )}
+              
+              {!audioInputEnabled && !result && (
                 <div className={styles.inputSection}>
-                  {audioInputEnabled ? (
-                    <AudioInput 
-                      correctNote={currentNote}
-                      onSubmit={handleNoteSubmit}
-                      isEnabled={true}
-                    />
-                  ) : (
-                    <NoteInput 
-                      correctNote={currentNote}
-                      onSubmit={handleNoteSubmit}
-                    />
-                  )}
+                  <NoteInput 
+                    correctNote={currentNote}
+                    onSubmit={handleNoteSubmit}
+                  />
                 </div>
               )}
             </div>

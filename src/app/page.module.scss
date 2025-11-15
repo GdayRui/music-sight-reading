@@ -86,6 +86,7 @@
 
 .staffSection {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   padding: 1rem;
@@ -93,6 +94,67 @@
   border-radius: 12px;
   border: 2px solid #e9ecef;
   flex-shrink: 0;
+  position: relative;
+}
+
+.successIndicator {
+  margin-top: 1rem;
+  font-size: 3rem;
+  color: #28a745;
+  animation: successPop 0.3s ease-out;
+}
+
+.failureIndicator {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  
+  .wrongMark {
+    font-size: 3rem;
+    color: #dc3545;
+    animation: failurePop 0.3s ease-out;
+  }
+  
+  .correctAnswer {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #495057;
+    background: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 6px;
+    border: 1px solid #dee2e6;
+    white-space: nowrap;
+  }
+}
+
+@keyframes successPop {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes failurePop {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
 .interactionSection {
@@ -186,6 +248,10 @@
     margin: 0 1rem;
     min-width: auto;
     width: calc(100% - 2rem);
+  }
+  
+  .staffSection {
+    width: 100%;
   }
   
   .interactionSection {

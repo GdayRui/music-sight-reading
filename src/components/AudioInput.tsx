@@ -156,7 +156,13 @@ export default function AudioInput({ correctNote, onSubmit, isEnabled }: AudioIn
         if (confidence > 0.8 && timeSinceStart > 500 && consecutiveDetectionsRef.current >= 5) {
           console.log('Auto-submitting:', note.charAt(0));
           onSubmit(note.charAt(0), confidence); // Extract just the letter
-          consecutiveDetectionsRef.current = 0; // Reset after submission
+          
+          // Reset counters but keep listening for the next note
+          consecutiveDetectionsRef.current = 0;
+          lastDetectedNoteRef.current = '';
+          setDetectedNote('');
+          setConfidence(0);
+          startTimeRef.current = Date.now(); // Reset timer for next note
         }
       } else {
         // Reset consecutive count if confidence drops
@@ -249,21 +255,22 @@ export default function AudioInput({ correctNote, onSubmit, isEnabled }: AudioIn
 
   return (
     <div className={styles.container}>
-      <h3 className={styles.title}>Audio Input</h3>
-      
-      <div className={styles.controls}>
-        {!isListening ? (
-          <button onClick={startListening} className={styles.startButton}>
-            🎤 Start Listening
-          </button>
-        ) : (
-          <button onClick={stopListening} className={styles.stopButton}>
-            🛑 Stop Listening
+      <div className={styles.header}>
+        <h3 className={styles.title}>Audio Input</h3>
+        {isListening && (
+          <button onClick={stopListening} className={styles.stopButton} title="Stop Listening">
+            ⏹
           </button>
         )}
       </div>
       
-      {isListening && (
+      {!isListening ? (
+        <div className={styles.controls}>
+          <button onClick={startListening} className={styles.startButton}>
+            🎤 Start Listening
+          </button>
+        </div>
+      ) : (
         <div className={styles.feedback}>
           <div className={styles.status}>
             <div className={`${styles.indicator} ${styles.listening}`}></div>
