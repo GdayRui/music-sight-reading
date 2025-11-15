@@ -57,9 +57,9 @@ export default function Home() {
     currentNoteRef.current = newNote; // Keep ref in sync
   }, [mode]);
 
-  // Auto-focus the "Next Note" button only when answer is correct
+  // Auto-focus the "Next Note" button only when answer is wrong (not auto-advancing)
   useEffect(() => {
-    if (result && result.isCorrect && nextButtonRef.current) {
+    if (result && !result.isCorrect && nextButtonRef.current) {
       nextButtonRef.current.focus();
     }
   }, [result]);
