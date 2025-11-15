@@ -79,15 +79,25 @@ export default function Home() {
   }, [result]);
 
   const handleNoteSubmit = (guess: string, confidence?: number) => {
-    // Extract just the note letter from currentNote (e.g., "C4" becomes "C")
     // Use ref to get the latest value, avoiding stale closure
-    const correctNoteLetter = currentNoteRef.current.charAt(0);
-    const isCorrect = guess.toUpperCase() === correctNoteLetter.toUpperCase();
+    const correctNote = currentNoteRef.current;
+    let isCorrect: boolean;
+    
+    // If confidence is provided, it's from audio input - match exact note with octave
+    // Otherwise, it's from keyboard input - match only the letter
+    if (confidence !== undefined) {
+      // Audio mode: exact match (e.g., "C5" must match "C5", not "C4" or "C6")
+      isCorrect = guess.toUpperCase() === correctNote.toUpperCase();
+    } else {
+      // Keyboard mode: letter-only match (e.g., "C" matches "C4", "C5", "C6")
+      const correctNoteLetter = correctNote.charAt(0);
+      isCorrect = guess.toUpperCase() === correctNoteLetter.toUpperCase();
+    }
     
     setResult({
       isCorrect,
       userGuess: guess,
-      correctNote: currentNoteRef.current
+      correctNote: correctNote
     });
   };
 

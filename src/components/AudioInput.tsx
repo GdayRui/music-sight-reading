@@ -154,8 +154,8 @@ export default function AudioInput({ correctNote, onSubmit, isEnabled }: AudioIn
         // 3. Same note detected consistently (at least 5 times in a row) - increased requirement
         const timeSinceStart = Date.now() - startTimeRef.current;
         if (confidence > 0.8 && timeSinceStart > 500 && consecutiveDetectionsRef.current >= 5) {
-          console.log('Auto-submitting:', note.charAt(0));
-          onSubmit(note.charAt(0), confidence); // Extract just the letter
+          console.log('Auto-submitting:', note);
+          onSubmit(note, confidence); // Submit full note with octave (e.g., "C5")
           
           // Reset counters but keep listening for the next note
           consecutiveDetectionsRef.current = 0;
